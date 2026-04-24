@@ -1,11 +1,15 @@
 # deploy the model on the frontend
 from flask import Flask, request, render_template
-import pickle, os
+import pickle, os, sys
 
+
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
 
 from src.preprocess import clean_text
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 app = Flask(__name__)
 
 
@@ -48,5 +52,5 @@ def index():
         is_spam=is_spam
     )
 if __name__ == "__main__":
-    print("App started successfully")
+    # print("App started successfully")
     app.run()
