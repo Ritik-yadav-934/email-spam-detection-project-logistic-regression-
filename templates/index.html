@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Spam Classification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 14px;
+            resize: vertical;
+            min-height: 150px;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        .result.spam {
+            background-color: #ffe0e0;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .result.ham {
+            background-color: #e0ffe0;
+            border-left: 4px solid #27ae60;
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .result.spam .result-title {
+            color: #c0392b;
+        }
+
+        .result.ham .result-title {
+            color: #229954;
+        }
+
+        .result-content {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .probability-bar {
+            margin-top: 10px;
+            height: 8px;
+            background-color: #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .probability-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .probability-text {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>📧 Email Spam Classifier</h1>
+        <p class="subtitle">Detect spam emails with machine learning</p>
+
+        <form method="POST">
+            <div class="form-group">
+                <label for="email">Paste your email content below:</label>
+                <textarea id="email" name="email" placeholder="Enter the email text you want to classify..."
+                    required></textarea>
+            </div>
+            <button type="submit">Classify Email</button>
+        </form>
+
+        {% if prediction %}
+        <div class="result show {% if is_spam %}spam{% else %}ham{% endif %}">
+
+            <div class="result-title">
+                {% if is_spam %}
+                ⚠️ This is SPAM
+                {% else %}
+                ✅ This is HAM (Not Spam)
+                {% endif %}
+            </div>
+
+            <div class="result-content">
+                <strong>Classification:</strong> {{ prediction }}<br>
+                <strong>Confidence:</strong> {{ "%.2f"|format(probability * 100) }}%
+
+                <div class="probability-bar">
+                    {% if is_spam %}
+                    <div class="probability-fill" style="width: {{ probability * 100 }}%"></div>
+                    {% else %}
+                    <div class="probability-fill" style="width: {{ (1 - probability) * 100 }}%"></div>
+                    {% endif %}
+                </div>
+
+                <div class="probability-text">
+                    Spam probability: {{ "%.2f"|format(probability * 100) }}% |
+                    Ham probability: {{ "%.2f"|format((1 - probability) * 100) }}%
+                </div>
+            </div>
+
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>

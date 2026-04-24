@@ -1,0 +1,16 @@
+import re
+
+def clean_text(text: str) -> str:
+    """
+    Clean raw email text:
+    - lowercase
+    - remvove urls
+    - remove number & punctuation
+    - normalize whitespace
+    """
+
+    text = text.lower()
+    text = re.sub(r"http\S+", "", text)
+    text = re.sub(r"[^a-z\s]", " ", text)
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
